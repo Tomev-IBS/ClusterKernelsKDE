@@ -98,10 +98,17 @@ void ClusterKernelsAlgorithm::AddNewClusterKernel(ClusterKernelStreamElement *st
 }
 
 /** Merges two cluster kernels with the lowest merge cost. Instead of calculating l2 cost, as
- *  proposed in original work, I'll use total variance distance do determine
+ *  proposed in original work, I'll use total variance distance in order to determine which merged cluster kernel
+ *  is the closest to it's part.
  *
  * @brief Merges two cluster kernels with the lowest merge cost.
  */
 void ClusterKernelsAlgorithm::MergeClusterKernelsWithTheLowestMergeCost() {
+  CalculateDomainForClusterKernelCalculation();
+}
+
+void ClusterKernelsAlgorithm::CalculateDomainForClusterKernelCalculation() {
+  domain_for_cluster_kernel_distance_calculation_.clear();
+  // First find min and max mean in within cluster kernels.
 
 }
