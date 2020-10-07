@@ -99,16 +99,42 @@ void ClusterKernelsAlgorithm::AddNewClusterKernel(ClusterKernelStreamElement *st
 
 /** Merges two cluster kernels with the lowest merge cost. Instead of calculating l2 cost, as
  *  proposed in original work, I'll use total variance distance in order to determine which merged cluster kernel
- *  is the closest to it's part.
+ *  is the closest to it's part. All the xs used for this calculation will basically be means of cluster
+ *  kernels.
  *
  * @brief Merges two cluster kernels with the lowest merge cost.
  */
 void ClusterKernelsAlgorithm::MergeClusterKernelsWithTheLowestMergeCost() {
-  CalculateDomainForClusterKernelCalculation();
+  FillDomainForClusterKernelDistanceCalculation();
+  // Finding i and j such that i-th and j-th cluster kernel has the lowest distance from their merge.
+  double minimal_distance = 1; // Initialize with maximum TV Distance value.
+  unsigned int first_cluster_kernel_index = 0;
+  unsigned int second_cluster_kernel_index = 0;
+  for(auto i = 0; i < cluster_kernels_.size(); ++i){
+    for(auto j = i + 1; j < cluster_kernels_.size(); ++j){
+      double current_distance = CalculateDistanceBetweenClusterKernelAndTheirMerge(i, j);
+    }
+  }
 }
 
-void ClusterKernelsAlgorithm::CalculateDomainForClusterKernelCalculation() {
+/** This method fills the domain for cluster kernel distance calculation with points. Although it may be
+ * too little, in this case I'll use only means of cluster kernels, as a valid (and most important!)
+ * points of the domain.
+ *
+ * @brief This method fills the domain for cluster kernel distance calculation with points.
+ */
+void ClusterKernelsAlgorithm::FillDomainForClusterKernelDistanceCalculation() {
   domain_for_cluster_kernel_distance_calculation_.clear();
-  // First find min and max mean in within cluster kernels.
+  for(auto cluster_kernel : cluster_kernels_){
+    domain_for_cluster_kernel_distance_calculation_.push_back(cluster_kernel->GetMean());
+  }
+}
+
+double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index,
+                                                                                   const int &second_ck_index) {
+
+}
+
+void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream_element) {
 
 }
