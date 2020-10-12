@@ -8,11 +8,11 @@
 
 #include <vector>
 
-typedef std::vector<double> point;
+typedef std::vector<double> Point;
 
 class ClusterKernelStreamElement{
   public:
-    virtual point GetMean() = 0;
+    virtual Point GetMean() = 0;
 };
 
 #endif //CLUSTERKERNELSKDE_CLUSTERKERNELSTREAMELEMENT_H

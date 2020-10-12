@@ -5,14 +5,16 @@
 #include <memory>
 
 #include "ClusterKernelStreamElement.h"
+#include "RealValuedFunction.h"
 
-typedef std::vector<double> point;
-
-class ClusterKernel{
+class ClusterKernel : public RealValuedFunction{
   public:
-    virtual point GetMean() = 0;
+    virtual Point GetMean() = 0;
     virtual void Update(ClusterKernelStreamElement *stream_element) = 0;
-    ClusterKernel* Merge(const ClusterKernel &other_cluster_kernel);
+    virtual ClusterKernel* Merge(const ClusterKernel &other_cluster_kernel) = 0;
+    Point GetValue(const Point &pt) override = 0;
+    virtual double GetWeight() = 0;
+    virtual unsigned int GetCardinality() = 0;
 };
 
 typedef std::shared_ptr<ClusterKernel> ClusterKernelPointer;
