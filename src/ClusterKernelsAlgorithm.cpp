@@ -113,8 +113,14 @@ void ClusterKernelsAlgorithm::MergeClusterKernelsWithTheLowestMergeCost() {
   for(auto i = 0; i < cluster_kernels_.size(); ++i){
     for(auto j = i + 1; j < cluster_kernels_.size(); ++j){
       double current_distance = CalculateDistanceBetweenClusterKernelAndTheirMerge(i, j);
+      if(current_distance < minimal_distance){
+        minimal_distance = current_distance;
+        first_cluster_kernel_index = i;
+        second_cluster_kernel_index = j;
+      }
     }
   }
+  MergeClusterKernels(first_cluster_kernel_index, second_cluster_kernel_index);
 }
 
 /** This method fills the domain for cluster kernel distance calculation with points. Although it may be
@@ -135,6 +141,19 @@ double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMer
 
 }
 
+/**
+ * @brief This methods updates bandwidth according to 2008 Cluster Kernels work.
+ * @param stream_element
+ */
 void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream_element) {
+  UpdateStandardDeviationEstimator
+
+  bandwidth_.clear();
+  for(auto value : variation_estimator_){
+    bandwidth_.push_back(bandwidth_coefficient_ * sqrt(value) * pow(number_of_parsed_elements_, elements_number_coefficient));
+  }
+}
+
+void ClusterKernelsAlgorithm::MergeClusterKernels(const int &first_kernel_index, const int &second_kernel_index) {
 
 }
