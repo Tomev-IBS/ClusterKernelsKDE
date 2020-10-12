@@ -2,6 +2,7 @@
 #define CLUSTERKERNELSKDE_FUNCTION_H
 
 #include <memory>
+#include <vector>
 
 typedef std::vector<double> Point;
 
