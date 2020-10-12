@@ -15,6 +15,7 @@ class ClusterKernel : public RealValuedFunction{
     Point GetValue(const Point &pt) override = 0;
     virtual double GetWeight() = 0;
     virtual unsigned int GetCardinality() = 0;
+    virtual void SetBandwidth(const Point &bandwidth) = 0;
 };
 
 typedef std::shared_ptr<ClusterKernel> ClusterKernelPointer;

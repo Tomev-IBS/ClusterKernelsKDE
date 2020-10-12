@@ -275,6 +275,9 @@ void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream
           bandwidth_coefficient_ * sqrt(value) * pow(number_of_parsed_elements_, elements_number_coefficient));
     }
   }
+  for(auto ck : cluster_kernels_){
+    ck->SetBandwidth(bandwidth_);
+  }
 }
 
 /** Update variation using Welford's online formula. As a side effect and a required step it
