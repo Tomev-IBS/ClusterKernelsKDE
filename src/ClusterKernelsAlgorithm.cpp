@@ -3,6 +3,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include <qDebug>
+
 namespace ClusterKenrelUtilities{
 
   bool AlmostEqual(const double &a, const double &b) {
@@ -116,6 +118,11 @@ void ClusterKernelsAlgorithm::PerformStep(ClusterKernelStreamElement *stream_ele
   // Merge cluster kernels if there are too many
   if(cluster_kernels_.size() > maximal_number_of_cluster_kernels_) {
     MergeClusterKernelsWithTheLowestMergeCost();
+  }
+
+  // Set bandwidth for every cluster kernel.
+  for(auto ck : cluster_kernels_){
+    ck->SetBandwidth(bandwidth_);
   }
 }
 
@@ -280,9 +287,6 @@ void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream
           bandwidth_coefficient_ * sqrt(value) * pow(number_of_parsed_elements_, elements_number_coefficient));
     }
   }
-  for(auto ck : cluster_kernels_){
-    ck->SetBandwidth(bandwidth_);
-  }
 }
 
 /** Update variation using Welford's online formula. As a side effect and a required step it
@@ -292,7 +296,7 @@ void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream
  */
 void ClusterKernelsAlgorithm::UpdateVariationEstimator(ClusterKernelStreamElement *stream_element) {
   ++number_of_parsed_elements_;
-  if(number_of_parsed_elements_ == 0){
+  if(number_of_parsed_elements_ == 1){
     last_step_elements_mean_ = stream_element->GetMean();
     for(auto dimension = 0; dimension < last_step_elements_mean_.size(); ++dimension){
       variation_estimator_.push_back(0); // Initialize variation estimator.
@@ -310,7 +314,7 @@ void ClusterKernelsAlgorithm::UpdateVariationEstimator(ClusterKernelStreamElemen
       current_mean.push_back(dimensions_mean);
       double dimensions_variation = variation_estimator_[dimension];
       dimensions_variation += ((elements_mean[dimension] - last_step_elements_mean_[dimension])
-          * (elements_mean[dimension] - dimensions_mean) - last_step_elements_mean_[dimension]) / number_of_parsed_elements_;
+          * (elements_mean[dimension] - dimensions_mean) - variation_estimator_[dimension]) / number_of_parsed_elements_;
       current_variation.push_back(dimensions_variation);
     }
     last_step_elements_mean_ = current_mean;
