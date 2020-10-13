@@ -3,14 +3,16 @@
 #include <cmath>
 #include <algorithm>
 
-bool AlmostEqual(const double &a, const double &b) {
-  // I'm using method from http://realtimecollisiondetection.net/blog/?p=89.
-  double absolute_tolerance = 1e-5;
-  double relative_tolerance = 1e-5;
+namespace ClusterKenrelUtilities{
 
-  return fabs(a - b) <= std::max(absolute_tolerance,
-                                    relative_tolerance * std::max(fabs(a), fabs(b)));
-}
+  bool AlmostEqual(const double &a, const double &b) {
+    // I'm using method from http://realtimecollisiondetection.net/blog/?p=89.
+    double absolute_tolerance = 1e-5;
+    double relative_tolerance = 1e-5;
+
+    return fabs(a - b) <= std::max(absolute_tolerance,
+                                   relative_tolerance * std::max(fabs(a), fabs(b)));
+  }
 
 /** Return sum of two vectors given by points (vectors of doubles). For more physical view
  *  one can assume that the vectors have one end in given point and the second at 0.
@@ -19,19 +21,19 @@ bool AlmostEqual(const double &a, const double &b) {
  *  @param second_point - A point defining the second vector.
  *  @return Sum of the vectors.
  */
-Point SumVectors(const Point &first_point, const Point &second_point){
-  Point sum = {};
-  // Check if dimensions are right. Return empty, if not.
-  if(second_point.size() != first_point.size()){
+  Point SumVectors(const Point &first_point, const Point &second_point){
+    Point sum = {};
+    // Check if dimensions are right. Return empty, if not.
+    if(second_point.size() != first_point.size()){
+      return sum;
+    }
+
+    for(auto i = 0; i < first_point.size(); ++i){
+      sum.push_back(first_point[i] + second_point[i]);
+    }
+
     return sum;
   }
-
-  for(auto i = 0; i < first_point.size(); ++i){
-    sum.push_back(first_point[i] + second_point[i]);
-  }
-
-  return sum;
-}
 
 /** Return difference of two vectors given by points (vectors of doubles). For more physical view
  *  one can assume that the vectors have one end in given point and the second at 0.
@@ -40,19 +42,19 @@ Point SumVectors(const Point &first_point, const Point &second_point){
  *  @param second_point - A point defining the second vector.
  *  @return Difference of the vectors.
  */
-Point SubtractVectors(const Point &first_point, const Point &second_point){
-  Point difference = {};
-  // Check if dimensions are right. Return empty, if not.
-  if(second_point.size() != first_point.size()){
+  Point SubtractVectors(const Point &first_point, const Point &second_point){
+    Point difference = {};
+    // Check if dimensions are right. Return empty, if not.
+    if(second_point.size() != first_point.size()){
+      return difference;
+    }
+
+    for(auto i = 0; i < first_point.size(); ++i){
+      difference.push_back(first_point[i] + second_point[i]);
+    }
+
     return difference;
   }
-
-  for(auto i = 0; i < first_point.size(); ++i){
-    difference.push_back(first_point[i] + second_point[i]);
-  }
-
-  return difference;
-}
 
 /** Multiplies the given vector by the given scalar. Vector here is defined by a point.
  * @brief Multiplies the given vector by the given scalar.
@@ -60,28 +62,31 @@ Point SubtractVectors(const Point &first_point, const Point &second_point){
  * @param scalar - A scalar by which vector will be multiplied.
  * @return Multiplied vector.
  */
-Point MultiplyVectorByScalar(const Point &point, const double &scalar){
-  Point multiplied_vector = {};
+  Point MultiplyVectorByScalar(const Point &point, const double &scalar){
+    Point multiplied_vector = {};
 
-  for(auto value : point){
-    multiplied_vector.push_back(scalar * value);
+    for(auto value : point){
+      multiplied_vector.push_back(scalar * value);
+    }
+
+    return multiplied_vector;
   }
-
-  return multiplied_vector;
-}
 
 /** Calculates length of the vector. This method in particular calculates euclidean distance.
  * @brief Calculates length of the vector.
  * @param pt - Point defining the vector.
  * @return - Given vectors length.
  */
-double GetVectorsLength(const Point &pt){
-  double vectors_length_squared = 0;
-  for(auto value : pt){
-    vectors_length_squared += pow(value, 2);
+  double GetVectorsLength(const Point &pt){
+    double vectors_length_squared = 0;
+    for(auto value : pt){
+      vectors_length_squared += pow(value, 2);
+    }
+    return sqrt(vectors_length_squared);
   }
-  return sqrt(vectors_length_squared);
-}
+};
+
+using namespace ClusterKenrelUtilities;
 
 ClusterKernelsAlgorithm::ClusterKernelsAlgorithm(const int &m,
                                                  ClusterKernel*(*cluster_kernel_factory_method)(ClusterKernelStreamElement *))
@@ -219,7 +224,7 @@ void ClusterKernelsAlgorithm::FillDomainForClusterKernelDistanceCalculation() {
  */
 double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index,
                                                                                    const int &second_ck_index) {
-  auto merged_kernel = std::shared_ptr<ClusterKernel>(cluster_kernels_[first_ck_index]->Merge(*cluster_kernels_[second_ck_index]));
+  auto merged_kernel = std::shared_ptr<ClusterKernel>(cluster_kernels_[first_ck_index]->Merge(cluster_kernels_[second_ck_index].get()));
   // Initialize the point denoting difference.
   Point current_difference = SumVectors(
       cluster_kernels_[first_ck_index]->GetValue(domain_for_cluster_kernel_distance_calculation_[0]),
@@ -251,7 +256,7 @@ double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMer
 void ClusterKernelsAlgorithm::MergeClusterKernels(const unsigned int &first_kernel_index,
                                                   const unsigned int &second_kernel_index) {
   cluster_kernels_[first_kernel_index] = std::shared_ptr<ClusterKernel>(
-      cluster_kernels_[first_kernel_index]->Merge(*cluster_kernels_[second_kernel_index].get()));
+      cluster_kernels_[first_kernel_index]->Merge(cluster_kernels_[second_kernel_index].get()));
   cluster_kernels_.erase(cluster_kernels_.begin() + second_kernel_index);
 }
 

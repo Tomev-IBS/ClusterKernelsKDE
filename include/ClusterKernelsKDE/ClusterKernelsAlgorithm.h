@@ -6,6 +6,7 @@
 #include "ClusterKernelStreamElement.h"
 #include "ClusterKernel.h"
 
+
 class ClusterKernelsAlgorithm : public RealValuedFunction{
 
   public:
@@ -13,7 +14,7 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
                             ClusterKernel*(*cluster_kernel_factory_method)(ClusterKernelStreamElement *stream_element));
     void PerformStep(ClusterKernelStreamElement *stream_element);
     Point GetValue(const Point &pt) override;
-  private:
+  protected:
     int maximal_number_of_cluster_kernels_ = 0;
     std::vector<ClusterKernelPointer> cluster_kernels_;
     ClusterKernel* (*cluster_kernel_factory_method_)(ClusterKernelStreamElement *stream_element);
