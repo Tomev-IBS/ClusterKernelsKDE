@@ -3,9 +3,7 @@
 #include <cmath>
 #include <algorithm>
 
-#include <qDebug>
-
-namespace ClusterKenrelUtilities{
+namespace ClusterKernelUtilities{
 
   bool AlmostEqual(const double &a, const double &b) {
     // I'm using method from http://realtimecollisiondetection.net/blog/?p=89.
@@ -88,7 +86,7 @@ namespace ClusterKenrelUtilities{
   }
 };
 
-using namespace ClusterKenrelUtilities;
+using namespace ClusterKernelUtilities;
 
 ClusterKernelsAlgorithm::ClusterKernelsAlgorithm(const int &m,
                                                  ClusterKernel*(*cluster_kernel_factory_method)(ClusterKernelStreamElement *))

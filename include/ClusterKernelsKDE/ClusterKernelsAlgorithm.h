@@ -33,8 +33,8 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
     void UpdateVariationEstimator(ClusterKernelStreamElement *stream_element);
     int FindIndexOfClusterKernelWithSameMeanAsStreamElement(ClusterKernelStreamElement *stream_element) const;
     double CalculateDistanceBetweenPoints(Point point1, Point point2) const;
-    void AddNewClusterKernel(ClusterKernelStreamElement *stream_element);
-    void MergeClusterKernelsWithTheLowestMergeCost();
+    virtual void AddNewClusterKernel(ClusterKernelStreamElement *stream_element);
+    virtual void MergeClusterKernelsWithTheLowestMergeCost();
     void FillDomainForClusterKernelDistanceCalculation();
     double CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index, const int &second_ck_index);
     void MergeClusterKernels(const unsigned int &first_kernel_index, const unsigned int &second_kernel_index);
