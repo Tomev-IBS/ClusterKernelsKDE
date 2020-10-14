@@ -1,5 +1,10 @@
 #include "UnivariateListBasedClusterKernelAlgorithm.h"
 
+UnivariateListBasedClusterKernelAlgorithm::UnivariateListBasedClusterKernelAlgorithm(const int &m,
+                                                                                     ClusterKernel *(*cluster_kernel_factory_method)(
+                                                                                         ClusterKernelStreamElement *)) : ClusterKernelsAlgorithm(m, cluster_kernel_factory_method)
+{}
+
 /** Adds new cluster kernel. This method is based on List-Based approach to cluster kernels algorithm for
  * univariate data. New element x should be inserted in such way that it's mean m_x satisfies
  *
@@ -22,8 +27,9 @@ void UnivariateListBasedClusterKernelAlgorithm::AddNewClusterKernel(ClusterKerne
     }
     ++new_kernel_position;
   }
-
+  new_cluster_kernel->SetBandwidth(bandwidth_);
   cluster_kernels_.insert(cluster_kernels_.begin() + new_kernel_position, new_cluster_kernel);
+  FillDomainForClusterKernelDistanceCalculation();
   UpdateMergeCostsListAfterAddingKernel(new_kernel_position);
 }
 
@@ -72,6 +78,7 @@ void UnivariateListBasedClusterKernelAlgorithm::MergeClusterKernelsWithTheLowest
       index_of_ck_with_lowest_merge_cost_with_next_ck = current_ck_index;
     }
   }
+
   MergeClusterKernels(index_of_ck_with_lowest_merge_cost_with_next_ck,
                       index_of_ck_with_lowest_merge_cost_with_next_ck + 1);
   UpdateMergeCostsListAfterMerging(index_of_ck_with_lowest_merge_cost_with_next_ck);

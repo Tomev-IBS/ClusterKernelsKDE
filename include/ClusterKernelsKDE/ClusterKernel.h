@@ -14,6 +14,7 @@ class ClusterKernel : public RealValuedFunction{
     virtual ClusterKernel* Merge(ClusterKernel *other_cluster_kernel) = 0;
     Point GetValue(const Point &pt) override = 0;
     virtual double GetWeight() = 0;
+    virtual void RescaleWeight(const double &modifier) = 0;
     virtual unsigned int GetCardinality() = 0;
     virtual void SetBandwidth(const Point &bandwidth) = 0;
 };

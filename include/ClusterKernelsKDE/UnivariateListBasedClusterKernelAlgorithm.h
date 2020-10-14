@@ -4,6 +4,9 @@
 #include "ClusterKernelsAlgorithm.h"
 
 class UnivariateListBasedClusterKernelAlgorithm : public ClusterKernelsAlgorithm {
+  public:
+    UnivariateListBasedClusterKernelAlgorithm(const int &m,
+                                              ClusterKernel*(*cluster_kernel_factory_method)(ClusterKernelStreamElement *stream_element));
   protected:
     std::vector<double> merge_cost_with_next_cluster_kernel_;
 

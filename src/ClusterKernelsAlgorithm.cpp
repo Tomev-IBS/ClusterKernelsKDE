@@ -215,7 +215,7 @@ void ClusterKernelsAlgorithm::MergeClusterKernelsWithTheLowestMergeCost() {
  */
 void ClusterKernelsAlgorithm::FillDomainForClusterKernelDistanceCalculation() {
   domain_for_cluster_kernel_distance_calculation_.clear();
-  for(auto cluster_kernel : cluster_kernels_){
+  for(const auto& cluster_kernel : cluster_kernels_){
     domain_for_cluster_kernel_distance_calculation_.push_back(cluster_kernel->GetMean());
   }
 }
@@ -230,6 +230,7 @@ void ClusterKernelsAlgorithm::FillDomainForClusterKernelDistanceCalculation() {
 double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index,
                                                                                    const int &second_ck_index) {
   auto merged_kernel = std::shared_ptr<ClusterKernel>(cluster_kernels_[first_ck_index]->Merge(cluster_kernels_[second_ck_index].get()));
+  merged_kernel->SetBandwidth(bandwidth_);
   // Initialize the point denoting difference.
   Point current_difference = SumVectors(
       cluster_kernels_[first_ck_index]->GetValue(domain_for_cluster_kernel_distance_calculation_[0]),
@@ -240,12 +241,15 @@ double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMer
 
   double difference = GetVectorsLength(current_difference);
 
-  for(auto i = 1; i < cluster_kernels_.size(); ++i){
+  //for(auto i = 1; i < cluster_kernels_.size(); ++i){
+  for(auto pt : domain_for_cluster_kernel_distance_calculation_){
     current_difference = SumVectors(
-        cluster_kernels_[first_ck_index]->GetValue(domain_for_cluster_kernel_distance_calculation_[i]),
-        cluster_kernels_[second_ck_index]->GetValue(domain_for_cluster_kernel_distance_calculation_[i])
+        cluster_kernels_[first_ck_index]->GetValue(pt),
+        cluster_kernels_[second_ck_index]->GetValue(pt)
                                    );
-    current_difference = SubtractVectors(current_difference, merged_kernel->GetValue(domain_for_cluster_kernel_distance_calculation_[i]));
+
+    current_difference = SubtractVectors(current_difference, merged_kernel->GetValue(pt));
+
     difference += GetVectorsLength(current_difference);
   }
 
@@ -334,7 +338,8 @@ Point ClusterKernelsAlgorithm::GetValue(const Point &x) {
   Point value_at_point = cluster_kernels_[0]->GetValue(x);
 
   for(auto i = 1; i < cluster_kernels_.size(); ++i){
-    value_at_point = SumVectors(value_at_point, cluster_kernels_[i]->GetValue(x));
+    auto addend_from_kernel = MultiplyVectorByScalar(cluster_kernels_[i]->GetValue(x), cluster_kernels_[i]->GetWeight());
+    value_at_point = SumVectors(value_at_point, addend_from_kernel);
   }
 
   for(auto i = 0; i < value_at_point.size(); ++i){
@@ -342,26 +347,4 @@ Point ClusterKernelsAlgorithm::GetValue(const Point &x) {
   }
 
   return value_at_point;
-}
-
-Point ClusterKernelsAlgorithm::CalculateMergedClusterKernelMean(const unsigned int &first_kernel_index,
-                                                                const unsigned int &second_kernel_index) {
-  double weights_sum = cluster_kernels_[first_kernel_index]->GetWeight() +
-      cluster_kernels_[second_kernel_index]->GetWeight();
-
-  // In case there's problem with weights.
-  if(AlmostEqual(weights_sum, 0)){
-    return {};
-  }
-
-  Point first_weighted_mean = MultiplyVectorByScalar(
-      cluster_kernels_[first_kernel_index]->GetMean(),
-      cluster_kernels_[first_kernel_index]->GetWeight()
-                                                    );
-  Point second_weighted_mean = MultiplyVectorByScalar(
-      cluster_kernels_[second_kernel_index]->GetMean(),
-      cluster_kernels_[second_kernel_index]->GetWeight()
-                                                     );
-
-  return MultiplyVectorByScalar(SumVectors(first_weighted_mean, second_weighted_mean), 1.0 / weights_sum);
 }

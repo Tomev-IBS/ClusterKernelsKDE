@@ -12,7 +12,7 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
   public:
     ClusterKernelsAlgorithm(const int &m,
                             ClusterKernel*(*cluster_kernel_factory_method)(ClusterKernelStreamElement *stream_element));
-    void PerformStep(ClusterKernelStreamElement *stream_element);
+    virtual void PerformStep(ClusterKernelStreamElement *stream_element);
     Point GetValue(const Point &pt) override;
   protected:
     int maximal_number_of_cluster_kernels_ = 0;
@@ -38,7 +38,6 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
     void FillDomainForClusterKernelDistanceCalculation();
     double CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index, const int &second_ck_index);
     void MergeClusterKernels(const unsigned int &first_kernel_index, const unsigned int &second_kernel_index);
-    Point CalculateMergedClusterKernelMean(const unsigned int &first_kernel_index, const unsigned int &second_kernel_index);
 };
 
 #endif //CLUSTERKERNELSKDE_CLUSTERKERNELSALGORITHM_H
