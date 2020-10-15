@@ -8,8 +8,9 @@ class WeightedUnivariateListBasedClusterKernelAlgorithm : public UnivariateListB
     WeightedUnivariateListBasedClusterKernelAlgorithm(const int &m,
                                                       ClusterKernel*(*cluster_kernel_factory_method)(ClusterKernelStreamElement *stream_element));
     void PerformStep(ClusterKernelStreamElement *stream_element) override;
+    Point GetValue(const Point &pt) override;
   protected:
-    double weight_modifier_ = 0.2;
+    double weight_modifier_ = 0.01;
     void AddNewClusterKernel(ClusterKernelStreamElement *stream_element) override;
 };
 

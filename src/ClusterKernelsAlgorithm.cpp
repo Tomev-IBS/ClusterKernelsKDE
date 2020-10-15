@@ -338,8 +338,7 @@ Point ClusterKernelsAlgorithm::GetValue(const Point &x) {
   Point value_at_point = cluster_kernels_[0]->GetValue(x);
 
   for(auto i = 1; i < cluster_kernels_.size(); ++i){
-    auto addend_from_kernel = MultiplyVectorByScalar(cluster_kernels_[i]->GetValue(x), cluster_kernels_[i]->GetWeight());
-    value_at_point = SumVectors(value_at_point, addend_from_kernel);
+    value_at_point = SumVectors(value_at_point, cluster_kernels_[i]->GetValue(x));
   }
 
   for(auto i = 0; i < value_at_point.size(); ++i){
