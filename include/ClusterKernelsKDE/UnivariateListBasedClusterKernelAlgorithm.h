@@ -13,7 +13,6 @@ class UnivariateListBasedClusterKernelAlgorithm : public ClusterKernelsAlgorithm
     void AddNewClusterKernel(ClusterKernelStreamElement *stream_element) override;
     void UpdateMergeCostsListAfterAddingKernel(const unsigned int &new_kernel_position);
     void MergeClusterKernelsWithTheLowestMergeCost() override;
-    void UpdateMergeCostsListAfterMerging(const unsigned int &merged_kernel_position);
 };
 
 #endif //CLUSTERKERNELSKDE_UNIVARIATELISTBASEDCLUSTERKERNELALGORITHM_H

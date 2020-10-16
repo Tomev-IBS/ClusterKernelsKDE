@@ -71,7 +71,6 @@ void WeightedUnivariateListBasedClusterKernelAlgorithm::AddNewClusterKernel(
   }
   new_cluster_kernel->SetBandwidth(bandwidth_);
   cluster_kernels_.insert(cluster_kernels_.begin() + new_kernel_position, new_cluster_kernel);
-  FillDomainForClusterKernelDistanceCalculation();
   UpdateMergeCostsListAfterAddingKernel(new_kernel_position);
 }
 
