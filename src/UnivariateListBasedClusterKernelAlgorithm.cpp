@@ -47,7 +47,7 @@ void UnivariateListBasedClusterKernelAlgorithm::UpdateMergeCostsListAfterAddingK
   merge_cost_with_next_cluster_kernel_.clear();
   for(auto i = 0; i < cluster_kernels_.size() - 1; ++i){
     merge_cost_with_next_cluster_kernel_.push_back(
-      CalculateDistanceBetweenClusterKernelAndTheirMerge(i, i + 1);
+      CalculateDistanceBetweenClusterKernelAndTheirMerge(i, i + 1)
     );
   }
 }
