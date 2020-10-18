@@ -72,13 +72,6 @@ void WeightedUnivariateListBasedClusterKernelAlgorithm::AddNewClusterKernel(
   }
   new_cluster_kernel->SetBandwidth(bandwidth_);
   cluster_kernels_.insert(cluster_kernels_.begin() + new_kernel_position, new_cluster_kernel);
-
-  /*
-  std::cout << "Current kernels means:\n";
-  for(auto kernel : cluster_kernels_){
-    std::cout << "\t" << kernel->GetMean()[0] << std::endl;
-  }
-  */
 }
 
 /** Calculates value of KDE in given point. Note, that due to using cluster kernels this is

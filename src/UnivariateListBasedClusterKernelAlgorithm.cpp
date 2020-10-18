@@ -1,4 +1,5 @@
 #include "UnivariateListBasedClusterKernelAlgorithm.h"
+#include <cmath>
 
 UnivariateListBasedClusterKernelAlgorithm::UnivariateListBasedClusterKernelAlgorithm(const int &m,
                                                                                      ClusterKernel *(*cluster_kernel_factory_method)(
@@ -133,15 +134,20 @@ double UnivariateListBasedClusterKernelAlgorithm::CalculateDistanceBetweenCluste
   merged_kernel->SetBandwidth(bandwidth_);
 
   double loss = 0;
+  double domain_length = domain_for_cluster_kernel_distance_calculation_[domain_for_cluster_kernel_distance_calculation_.size() - 1][0] -
+      domain_for_cluster_kernel_distance_calculation_[0][0];
 
   // Instead of integral, I'll use discrete sum over points.
   for(auto pt : domain_for_cluster_kernel_distance_calculation_){
     auto first_ck = cluster_kernels_[first_ck_index];
     auto second_ck = cluster_kernels_[second_ck_index];
-    loss += first_ck->GetCardinality() / bandwidth_[0] * first_ck->GetKernelValue({(pt[0] - first_ck->GetMean()[0]) / bandwidth_[0]})[0];
-    loss += second_ck->GetCardinality() / bandwidth_[0] * second_ck->GetKernelValue({(pt[0] - second_ck->GetMean()[0]) / bandwidth_[0]})[0];
-    loss -= merged_kernel->GetCardinality() / bandwidth_[0] * merged_kernel->GetKernelValue({(pt[0] - merged_kernel->GetMean()[0]) / bandwidth_[0]})[0];
+    double current_loss = first_ck->GetCardinality() / bandwidth_[0] * first_ck->GetKernelValue({(pt[0] - first_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss += second_ck->GetCardinality() / bandwidth_[0] * second_ck->GetKernelValue({(pt[0] - second_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss -= merged_kernel->GetCardinality() / bandwidth_[0] * merged_kernel->GetKernelValue({(pt[0] - merged_kernel->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss = pow(current_loss, 2);
+    loss += current_loss;
   }
+  loss /= domain_for_cluster_kernel_distance_calculation_.size();
 
-  return loss;
+  return sqrt(loss * domain_length);
 }
