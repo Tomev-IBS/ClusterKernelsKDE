@@ -1,5 +1,6 @@
 #include "WeightedUnivariateListBasedClusterKernelAlgorithm.h"
 #include <iostream>
+#include <cmath>
 
 namespace WeightedUnivariateListBasedClusterKernelAlgorithmUtilities{
   /** Multiplies the given vector by the given scalar. Vector here is defined by a point.
@@ -93,4 +94,28 @@ Point WeightedUnivariateListBasedClusterKernelAlgorithm::GetValue(const Point &x
   }
 
   return value_at_point;
+}
+
+double WeightedUnivariateListBasedClusterKernelAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMerge(
+    const int &first_ck_index, const int &second_ck_index) {
+  auto merged_kernel = ClusterKernelPointer(cluster_kernels_[first_ck_index]->Merge(cluster_kernels_[second_ck_index].get()));
+  merged_kernel->SetBandwidth(bandwidth_);
+
+  double loss = 0;
+  double domain_length = domain_for_cluster_kernel_distance_calculation_[domain_for_cluster_kernel_distance_calculation_.size() - 1][0] -
+                         domain_for_cluster_kernel_distance_calculation_[0][0];
+
+  // Instead of integral, I'll use discrete sum over points.
+  for(auto pt : domain_for_cluster_kernel_distance_calculation_){
+    auto first_ck = cluster_kernels_[first_ck_index];
+    auto second_ck = cluster_kernels_[second_ck_index];
+    double current_loss = first_ck->GetWeight() / bandwidth_[0] * first_ck->GetKernelValue({(pt[0] - first_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss += second_ck->GetWeight() / bandwidth_[0] * second_ck->GetKernelValue({(pt[0] - second_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss -= merged_kernel->GetWeight() / bandwidth_[0] * merged_kernel->GetKernelValue({(pt[0] - merged_kernel->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss = pow(current_loss, 2);
+    loss += current_loss;
+  }
+  loss /= domain_for_cluster_kernel_distance_calculation_.size();
+
+  return sqrt(loss * domain_length);
 }
