@@ -109,9 +109,9 @@ double WeightedUnivariateListBasedClusterKernelAlgorithm::CalculateDistanceBetwe
   for(auto pt : domain_for_cluster_kernel_distance_calculation_){
     auto first_ck = cluster_kernels_[first_ck_index];
     auto second_ck = cluster_kernels_[second_ck_index];
-    double current_loss = first_ck->GetWeight() / bandwidth_[0] * first_ck->GetKernelValue({(pt[0] - first_ck->GetMean()[0]) / bandwidth_[0]})[0];
-    current_loss += second_ck->GetWeight() / bandwidth_[0] * second_ck->GetKernelValue({(pt[0] - second_ck->GetMean()[0]) / bandwidth_[0]})[0];
-    current_loss -= merged_kernel->GetWeight() / bandwidth_[0] * merged_kernel->GetKernelValue({(pt[0] - merged_kernel->GetMean()[0]) / bandwidth_[0]})[0];
+    double current_loss = first_ck->GetCardinality() * first_ck->GetWeight() / bandwidth_[0] * first_ck->GetKernelValue({(pt[0] - first_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss += second_ck->GetCardinality() * second_ck->GetWeight() / bandwidth_[0] * second_ck->GetKernelValue({(pt[0] - second_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    current_loss -= merged_kernel->GetCardinality() * merged_kernel->GetWeight() / bandwidth_[0] * merged_kernel->GetKernelValue({(pt[0] - merged_kernel->GetMean()[0]) / bandwidth_[0]})[0];
     current_loss = pow(current_loss, 2);
     loss += current_loss;
   }
