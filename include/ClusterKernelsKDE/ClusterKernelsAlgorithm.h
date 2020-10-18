@@ -36,7 +36,7 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
     virtual void AddNewClusterKernel(ClusterKernelStreamElement *stream_element);
     virtual void MergeClusterKernelsWithTheLowestMergeCost();
     virtual void FillDomainForClusterKernelDistanceCalculation();
-    double CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index, const int &second_ck_index);
+    virtual double CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index, const int &second_ck_index);
     void MergeClusterKernels(const unsigned int &first_kernel_index, const unsigned int &second_kernel_index);
 };
 

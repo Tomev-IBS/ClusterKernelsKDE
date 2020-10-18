@@ -126,3 +126,22 @@ double UnivariateListBasedClusterKernelAlgorithm::FindMaximalValueOnDimension(co
 
   return maximal_value_on_dimension;
 }
+
+double UnivariateListBasedClusterKernelAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMerge(
+    const int &first_ck_index, const int &second_ck_index) {
+  auto merged_kernel = ClusterKernelPointer(cluster_kernels_[first_ck_index]->Merge(cluster_kernels_[second_ck_index].get()));
+  merged_kernel->SetBandwidth(bandwidth_);
+
+  double loss = 0;
+
+  // Instead of integral, I'll use discrete sum over points.
+  for(auto pt : domain_for_cluster_kernel_distance_calculation_){
+    auto first_ck = cluster_kernels_[first_ck_index];
+    auto second_ck = cluster_kernels_[second_ck_index];
+    loss += first_ck->GetCardinality() / bandwidth_[0] * first_ck->GetKernelValue({(pt[0] - first_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    loss += second_ck->GetCardinality() / bandwidth_[0] * second_ck->GetKernelValue({(pt[0] - second_ck->GetMean()[0]) / bandwidth_[0]})[0];
+    loss -= merged_kernel->GetCardinality() / bandwidth_[0] * merged_kernel->GetKernelValue({(pt[0] - merged_kernel->GetMean()[0]) / bandwidth_[0]})[0];
+  }
+
+  return loss;
+}
