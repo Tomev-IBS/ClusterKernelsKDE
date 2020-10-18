@@ -11,7 +11,7 @@ class UnivariateListBasedClusterKernelAlgorithm : public ClusterKernelsAlgorithm
     std::vector<double> merge_cost_with_next_cluster_kernel_;
 
     void AddNewClusterKernel(ClusterKernelStreamElement *stream_element) override;
-    void UpdateMergeCostsListAfterAddingKernel(const unsigned int &new_kernel_position);
+    void UpdateMergeCostsList();
     void MergeClusterKernelsWithTheLowestMergeCost() override;
     void FillDomainForClusterKernelDistanceCalculation() override;
     double FindMinimalValueOnDimension(const int &dimension=0);

@@ -29,7 +29,7 @@ void UnivariateListBasedClusterKernelAlgorithm::AddNewClusterKernel(ClusterKerne
   }
   new_cluster_kernel->SetBandwidth(bandwidth_);
   cluster_kernels_.insert(cluster_kernels_.begin() + new_kernel_position, new_cluster_kernel);
-  UpdateMergeCostsListAfterAddingKernel(new_kernel_position);
+  UpdateMergeCostsList();
 }
 
 /** Updates merge costs list after adding new cluster kernel. Worst case scenario it requires calculation
@@ -41,8 +41,7 @@ void UnivariateListBasedClusterKernelAlgorithm::AddNewClusterKernel(ClusterKerne
  * @brief Updates merge costs list after adding new cluster kernel.
  * @param new_kernel_position - Position of new kernel.
  */
-void UnivariateListBasedClusterKernelAlgorithm::UpdateMergeCostsListAfterAddingKernel(
-    const unsigned int &new_kernel_position) {
+void UnivariateListBasedClusterKernelAlgorithm::UpdateMergeCostsList() {
   FillDomainForClusterKernelDistanceCalculation();
   merge_cost_with_next_cluster_kernel_.clear();
   for(auto i = 0; i < cluster_kernels_.size() - 1; ++i){
@@ -59,6 +58,7 @@ void UnivariateListBasedClusterKernelAlgorithm::UpdateMergeCostsListAfterAddingK
  * @brief Merges two cluster with the lowest merge cost.
  */
 void UnivariateListBasedClusterKernelAlgorithm::MergeClusterKernelsWithTheLowestMergeCost() {
+  UpdateMergeCostsList();
   // I'll use abbreviation ck for cluster kernels.
   unsigned int index_of_ck_with_lowest_merge_cost_with_next_ck = 0;
   double minimal_distance = merge_cost_with_next_cluster_kernel_[index_of_ck_with_lowest_merge_cost_with_next_ck];

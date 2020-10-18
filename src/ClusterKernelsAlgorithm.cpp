@@ -241,8 +241,8 @@ double ClusterKernelsAlgorithm::CalculateDistanceBetweenClusterKernelAndTheirMer
 
   double difference = GetVectorsLength(current_difference);
 
-  //for(auto i = 1; i < cluster_kernels_.size(); ++i){
-  for(auto pt : domain_for_cluster_kernel_distance_calculation_){
+  for(auto i = 1; i < cluster_kernels_.size(); ++i){
+    auto pt = domain_for_cluster_kernel_distance_calculation_[i];
     current_difference = SumVectors(
         cluster_kernels_[first_ck_index]->GetValue(pt),
         cluster_kernels_[second_ck_index]->GetValue(pt)

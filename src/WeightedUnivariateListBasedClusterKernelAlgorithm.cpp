@@ -1,4 +1,5 @@
 #include "WeightedUnivariateListBasedClusterKernelAlgorithm.h"
+#include <iostream>
 
 namespace WeightedUnivariateListBasedClusterKernelAlgorithmUtilities{
   /** Multiplies the given vector by the given scalar. Vector here is defined by a point.
@@ -63,15 +64,21 @@ void WeightedUnivariateListBasedClusterKernelAlgorithm::AddNewClusterKernel(
   // means closest to it.
   double new_cluster_kernel_value = new_cluster_kernel->GetMean()[0];
   unsigned int new_kernel_position = 0;
-  for(auto value : cluster_kernels_){
-    if(value->GetMean()[0] > new_cluster_kernel_value) {
+  for(auto kernel : cluster_kernels_){
+    if(kernel->GetMean()[0] > new_cluster_kernel_value) {
       break;
     }
     ++new_kernel_position;
   }
   new_cluster_kernel->SetBandwidth(bandwidth_);
   cluster_kernels_.insert(cluster_kernels_.begin() + new_kernel_position, new_cluster_kernel);
-  UpdateMergeCostsListAfterAddingKernel(new_kernel_position);
+
+  /*
+  std::cout << "Current kernels means:\n";
+  for(auto kernel : cluster_kernels_){
+    std::cout << "\t" << kernel->GetMean()[0] << std::endl;
+  }
+  */
 }
 
 /** Calculates value of KDE in given point. Note, that due to using cluster kernels this is
