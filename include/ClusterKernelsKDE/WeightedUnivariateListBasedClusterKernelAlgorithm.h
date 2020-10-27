@@ -11,8 +11,10 @@ class WeightedUnivariateListBasedClusterKernelAlgorithm : public UnivariateListB
     Point GetValue(const Point &pt) override;
   protected:
     double weight_modifier_ = 0.01;
+    double weights_sum_ = 0;
     void AddNewClusterKernel(ClusterKernelStreamElement *stream_element) override;
     double CalculateDistanceBetweenClusterKernelAndTheirMerge(const int &first_ck_index, const int &second_ck_index) override;
+    void UpdateVariationEstimator(ClusterKernelStreamElement *stream_element) override;
 };
 
 #endif //KERDEP_WEIGHTEDUNIVARIATELISTBASEDCLUSTERKERNELALGORITHM_H

@@ -30,7 +30,7 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
     double elements_number_coefficient = -0.2;
 
     void UpdateBandwidth(ClusterKernelStreamElement *stream_element);
-    void UpdateVariationEstimator(ClusterKernelStreamElement *stream_element);
+    virtual void UpdateVariationEstimator(ClusterKernelStreamElement *stream_element);
     int FindIndexOfClusterKernelWithSameMeanAsStreamElement(ClusterKernelStreamElement *stream_element) const;
     double CalculateDistanceBetweenPoints(Point point1, Point point2) const;
     virtual void AddNewClusterKernel(ClusterKernelStreamElement *stream_element);

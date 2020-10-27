@@ -119,3 +119,38 @@ double WeightedUnivariateListBasedClusterKernelAlgorithm::CalculateDistanceBetwe
 
   return sqrt(loss * domain_length);
 }
+
+/** Update variation using West's online formula. As a side effect and a required step it
+ *  also updates mean estimator. This is for weighted  case!
+ *  @brief Update variation using West's online formula.
+ *  @param stream_element - Actually parsed stream element.
+ */
+void WeightedUnivariateListBasedClusterKernelAlgorithm::UpdateVariationEstimator(ClusterKernelStreamElement *stream_element) {
+  ++number_of_parsed_elements_;
+  weights_sum_ *= (1 - weight_modifier_); // Decrease importance of old samples.
+  weights_sum_ += weight_modifier_; // Weight modifier is also the weight of new element.
+  if(number_of_parsed_elements_ == 1){
+    last_step_elements_mean_ = stream_element->GetMean();
+    for(auto dimension = 0; dimension < last_step_elements_mean_.size(); ++dimension){
+      variation_estimator_.push_back(0); // Initialize variation estimator.
+    }
+  }
+  else{
+    Point elements_mean = stream_element->GetMean();
+    Point current_mean = {};
+    Point current_variation = {};
+    for(auto dimension = 0; dimension < last_step_elements_mean_.size(); ++dimension){
+      // This loop is done for each dimension separately. Dimension values are therefore
+      // meant with respect to currently parsed dimension.
+      double dimensions_mean = last_step_elements_mean_[dimension];
+      dimensions_mean += (elements_mean[dimension] - last_step_elements_mean_[dimension]) * weight_modifier_ / weights_sum_;
+      current_mean.push_back(dimensions_mean);
+      double dimensions_variation = variation_estimator_[dimension];
+      dimensions_variation += ((elements_mean[dimension] - last_step_elements_mean_[dimension])
+                               * (elements_mean[dimension] - dimensions_mean) - variation_estimator_[dimension]) * weight_modifier_ / weights_sum_;
+      current_variation.push_back(dimensions_variation);
+    }
+    last_step_elements_mean_ = current_mean;
+    variation_estimator_ = current_variation;
+  }
+}
