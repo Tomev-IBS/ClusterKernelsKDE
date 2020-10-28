@@ -26,7 +26,7 @@ class ClusterKernelsAlgorithm : public RealValuedFunction{
     Point last_step_elements_mean_ = {};
     Point variation_estimator_ = {};
     // "Magic values" from the paper
-    double bandwidth_coefficient_ = 1.06;
+    double bandwidth_coefficient_ = 2.45;
     double elements_number_coefficient = -0.2;
 
     void UpdateBandwidth(ClusterKernelStreamElement *stream_element);

@@ -286,7 +286,7 @@ void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream
   else {
     for(auto value : variation_estimator_) {
       bandwidth_.push_back(
-          bandwidth_coefficient_ * sqrt(value) * pow(number_of_parsed_elements_, elements_number_coefficient));
+          bandwidth_coefficient_ * sqrt(value) * pow(cluster_kernels_.size(), elements_number_coefficient));
     }
   }
 }
