@@ -145,7 +145,9 @@ int ClusterKernelsAlgorithm::FindIndexOfClusterKernelWithSameMeanAsStreamElement
   return index;
 }
 
-/** Method for calculating distance between points. In this case euclidean distance is calculated
+/** Method for calculating dis
+ *
+ * tance between points. In this case euclidean distance is calculated
  * as it's one of the easiest to understand and the most well known.
  *
  * TR TODO: Consider having distance calculating object in case different distance measures
@@ -286,7 +288,7 @@ void ClusterKernelsAlgorithm::UpdateBandwidth(ClusterKernelStreamElement *stream
   else {
     for(auto value : variation_estimator_) {
       bandwidth_.push_back(
-          bandwidth_coefficient_ * sqrt(value) * pow(cluster_kernels_.size(), elements_number_coefficient));
+          bandwidth_coefficient_ * sqrt(value) * pow(number_of_parsed_elements_, elements_number_coefficient));
     }
   }
 }

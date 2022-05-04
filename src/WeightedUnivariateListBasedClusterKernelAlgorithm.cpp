@@ -126,6 +126,10 @@ double WeightedUnivariateListBasedClusterKernelAlgorithm::CalculateDistanceBetwe
  *  @param stream_element - Actually parsed stream element.
  */
 void WeightedUnivariateListBasedClusterKernelAlgorithm::UpdateVariationEstimator(ClusterKernelStreamElement *stream_element) {
+
+  //UnivariateListBasedClusterKernelAlgorithm::UpdateVariationEstimator(stream_element);
+  //return;
+
   ++number_of_parsed_elements_;
   weights_sum_ *= (1 - weight_modifier_); // Decrease importance of old samples.
   weights_sum_ += weight_modifier_; // Weight modifier is also the weight of new element.
